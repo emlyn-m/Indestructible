@@ -37,8 +37,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        app:layout_constraintBottom_toTopOf="@+id/startStopLL"
-        >
+        app:layout_constraintBottom_toTopOf="@+id/startStopCL" >
 
         <TextView
             android:id="@+id/loggingTV"
@@ -49,8 +48,8 @@
 
     </ScrollView>
 
-    <LinearLayout
-        android:id="@+id/startStopLL"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/startStopCL"
         android:layout_width="0dp"
         android:layout_height="100dp"
         android:layout_margin="20dp"
@@ -58,6 +57,36 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:orientation="horizontal" />
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/stateChangeIV"
+            android:layout_height="0dp"
+            android:layout_width="0dp"
+            android:layout_margin="20dp"
+
+            android:background="@color/purple_200"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintDimensionRatio="1" />
+
+        <TextView
+            android:id="@+id/stateChangeTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20dp"
+            tools:ignore="spUsage"
+            android:textColor="?attr/colorOnPrimary"
+            android:text="@string/kill"
+            android:fontFamily="@font/modern_sans"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias=".45"
+            app:layout_constraintStart_toEndOf="@+id/stateChangeIV"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,7 +8,6 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import xyz.emlyn.Indestructible.R
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
@@ -33,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         mToolbar.title = ""
         setSupportActionBar(mToolbar)
 
-        logFile = File("/data/data/xyz.emlyn.Indestructible/log")
+        logFile = File("/data/data/xyz.emlyn.indestructible/log")
 
         if (!logFile.exists()) {
             logFile.createNewFile()
