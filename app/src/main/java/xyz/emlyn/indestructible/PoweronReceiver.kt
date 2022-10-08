@@ -1,9 +1,10 @@
-package xyz.emlyn.Indestructible
+package xyz.emlyn.indestructible
 
 import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import xyz.emlyn.Indestructible.R
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

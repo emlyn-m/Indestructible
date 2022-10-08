@@ -1,16 +1,14 @@
-package xyz.emlyn.Indestructible
+package xyz.emlyn.indestructible
 
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.os.FileObserver
-import android.os.Handler
-import android.os.Looper
-import android.text.method.ScrollingMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import xyz.emlyn.Indestructible.R
 import java.io.BufferedReader
 import java.io.File
 import java.io.FileReader
