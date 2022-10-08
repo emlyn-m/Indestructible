@@ -25,7 +25,7 @@ int main() {
     fd = inotify_init();
     if (fd < 0) { perror("inotify_init"); }
 
-    killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.indestructable/", IN_CREATE);
+    killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.Indestructible/", IN_CREATE);
     instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY);
 
     while (1) {
@@ -43,7 +43,7 @@ int main() {
                 if (event->mask & IN_CREATE) {
 
                     if (event->name == "kill_sig") {  // kill sig
-                        remove("/data/data/xyz.emlyn.indestructable/kk");
+                        remove("/data/data/xyz.emlyn.Indestructible/kk");
 
                         inotify_rm_watch(fd, killProc);
                         inotify_rm_watch(fd, instagram);
@@ -53,19 +53,19 @@ int main() {
                     }
 
                     if (event->name == "restore_db") {
-                        // todo: copy db from .indestructable to com.instagram.android/databases
+                        // todo: copy db from .Indestructible to com.instagram.android/databases
                     }
                 }
 
                 if (event->mask & IN_MODIFY) {
                     // file modified
-                    // for now just create a file in .indestructable/ for logging purposes
-                    // todo: probably copy instagram db to a file in .indestructable/databases and handle it there?
+                    // for now just create a file in .Indestructible/ for logging purposes
+                    // todo: probably copy instagram db to a file in .Indestructible/databases and handle it there?
                     // then backup / restore, create warning
 
                     // ooh maybe do some temporary copying to account for race conditions? like direct.bak.001.db, direct.bak.002.db, using largest number already exists in dir + 1
 
-                    FILE* pFile = fopen("/data/data/xyz.emlyn.indestructable/instagram_modified", "w");
+                    FILE* pFile = fopen("/data/data/xyz.emlyn.Indestructible/instagram_modified", "w");
                     fclose(pFile); // open/close to create file
                 }
 

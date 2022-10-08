@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Indestructable</string>
+    <string name="app_name">Indestructible</string>
 
     <string name="event_log_preifx">Event log beginning %1$s\n</string>
 </resources>

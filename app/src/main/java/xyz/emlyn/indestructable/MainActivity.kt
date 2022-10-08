@@ -1,4 +1,4 @@
-package xyz.emlyn.indestructable
+package xyz.emlyn.Indestructible
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -35,7 +35,7 @@ class MainActivity : AppCompatActivity() {
         mToolbar.title = ""
         setSupportActionBar(mToolbar)
 
-        logFile = File("/data/data/xyz.emlyn.indestructable/log")
+        logFile = File("/data/data/xyz.emlyn.Indestructible/log")
 
         if (!logFile.exists()) {
             logFile.createNewFile()

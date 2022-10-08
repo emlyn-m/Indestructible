@@ -1,4 +1,4 @@
-package xyz.emlyn.indestructable
+package xyz.emlyn.Indestructible
 
 import org.junit.Test
 
