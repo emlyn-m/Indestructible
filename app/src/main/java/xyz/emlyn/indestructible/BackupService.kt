@@ -4,17 +4,20 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
+import android.os.FileObserver
 import android.os.IBinder
 import android.os.PowerManager
-import android.speech.tts.TextToSpeech.STOPPED
-import android.telephony.ServiceState
 import android.util.Log
+import java.io.File
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class BackupService : Service() {
 
     private var wakeLock : PowerManager.WakeLock? = null
     private var isServiceStarted = false
+
+    private lateinit var observer : FixedFileObserver
 
     override fun onBind(intent: Intent): IBinder? {
         return null  // not binding this service
@@ -29,15 +32,28 @@ class BackupService : Service() {
     }
 
 
+    @SuppressLint("SdCardPath")
     override fun onCreate() {
         super.onCreate()
 
         val notification = createNotification()
+        startService()
+
+        observer = object:FixedFileObserver(File("/data/data/xyz.emlyn.indestructible/")) {
+            override fun onEvent(event: Int, path: String?) {
+                if (event == FileObserver.CREATE && path == "kill_service") {
+                    File("/data/data/xyz.emlyn.indestructible/kill_service").delete()
+                    stopService()
+                }
+            }
+        }
+        observer.startWatching()
+
         startForeground(1, notification)
     }
 
 
-    @SuppressLint("WakelockTimeout")
+    @SuppressLint("WakelockTimeout", "SdCardPath")
     private fun startService() {
         //TODO: Proper code in here - trigger c code, etc.
 
@@ -47,11 +63,18 @@ class BackupService : Service() {
                     acquire()
                 }
             }
+
+        File("/data/data/xyz.emlyn.indestructible/log")
+            .appendText(String.format(getString(R.string.service_start_log), LocalDateTime.now().format(
+            DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS"))))
+
+        File("/data/data/xyz.emlyn.indestructible/service_created").createNewFile()
+
     }
 
     private fun stopService() {
 
-        //TODO: Proper code in here - kill c code, etc.
+        //TODO: Kill c code FIRST
 
         try {
             wakeLock?.let {
@@ -65,6 +88,16 @@ class BackupService : Service() {
             Log.e("xyz.emlyn", "Service stopped without being started: ${e.message}")
         }
         isServiceStarted = false
+
+        // kill observer
+        observer.stopWatching()
+
+
+        File("/data/data/xyz.emlyn.indestructible/log")
+            .appendText(String.format(getString(R.string.service_stop_log), LocalDateTime.now().format(
+                DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS"))))
+        File("/data/data/xyz.emlyn.indestructible/service_killed").createNewFile()
+
     }
 
 
@@ -75,13 +108,11 @@ class BackupService : Service() {
         val channel = NotificationChannel(
             notifChannelId,
             "Indestructible backup/restore service notification",
-            NotificationManager.IMPORTANCE_HIGH
+            NotificationManager.IMPORTANCE_MIN
         ).let {
-            it.description = "Indestructible running in background"
-            it.enableLights(true)
-            it.lightColor = Color.RED
-            it.enableVibration(true)
-            it.vibrationPattern = longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)
+            it.description = "Indestructible backup service running"
+            it.enableLights(false)
+            it.enableVibration(false)
             it
         }
         notifManager.createNotificationChannel(channel)

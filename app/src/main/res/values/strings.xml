@@ -1,7 +1,10 @@
 <resources>
     <string name="app_name">Indestructible</string>
+    <string name="bak_serv_desc">Backup/Restore service for Indestructible</string>
 
     <string name="event_log_preifx">Event log beginning %1$s\n</string>
+    <string name="service_start_log">Service started at %1$s\n</string>
+    <string name="service_stop_log">Service stopped at %1$s\n</string>
 
     <string name="start">START</string>
     <string name="loading">LOADING…</string>
