@@ -29,6 +29,11 @@ int main() {
     killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.indestructible/", IN_CREATE);
     instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY);
 
+    //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
+    FILE* logFile = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
+    fwrite("C++ Observer started\n", sizeof(char), strlen("C++ Observer started\n"), logFile);
+    fclose(logFile);
+
     while (1) {
 
         i = 0;
