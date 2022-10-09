@@ -15,10 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
-import java.io.BufferedReader
-import java.io.File
-import java.io.FileReader
-import java.io.IOException
+import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -74,6 +71,24 @@ class MainActivity : AppCompatActivity() {
         }
         logObserver.startWatching()
 
+        // Copy InstagramObserver from /res/raw to /data/data/xyz.emlyn.indestructible/
+        val igObserverExe = File("/data/data/xyz.emlyn.indestructible/InstagramObserver")
+        if (!igObserverExe.exists()) {
+            val inStream: InputStream = resources.openRawResource(R.raw.InstagramObserver)
+            val out = FileOutputStream("/data/data/xyz.emlyn.indestructible/InstagramObserver")
+            val buff = ByteArray(1024)
+            var read = 0
+
+            try {
+                while (inStream.read(buff).also { read = it } > 0) {
+                    out.write(buff, 0, read)
+                }
+            } finally {
+                inStream.close()
+                out.close()
+            }
+
+        }
 
         // UI Run delayed
         findViewById<ConstraintLayout>(R.id.startStopCL).setOnClickListener(this::onClick)
