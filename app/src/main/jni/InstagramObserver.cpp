@@ -30,6 +30,7 @@ int main() {
     instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY);
 
     //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
+    //TODO: Include timestamp
     FILE* logFile = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
     fwrite("C++ Observer started\n", sizeof(char), strlen("C++ Observer started\n"), logFile);
     fclose(logFile);
@@ -51,6 +52,12 @@ int main() {
 
                     if (!std::strcmp(event->name, "kill_sig")) {  // kill sig
                         remove("/data/data/xyz.emlyn.indestructible/kill_sig");
+
+                        //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
+                        //TODO: Include timestamp
+                        FILE* logFile = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
+                        fwrite("C++ Observer killed\n", sizeof(char), strlen("C++ Observer killed\n"), logFile);
+                        fclose(logFile);
 
                         inotify_rm_watch(fd, killProc);
                         inotify_rm_watch(fd, instagram);
