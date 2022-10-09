@@ -6,6 +6,7 @@
 #include <sys/inotify.h>
 #include <cstdio>
 #include <unistd.h>
+#include <string>
 
 #define EVENT_SIZE  ( sizeof (struct inotify_event) )
 #define EVENT_BUF_LEN     ( 1024 * ( EVENT_SIZE + 16 ) )
@@ -25,7 +26,7 @@ int main() {
     fd = inotify_init();
     if (fd < 0) { perror("inotify_init"); }
 
-    killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.Indestructible/", IN_CREATE);
+    killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.indestructible/", IN_CREATE);
     instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY);
 
     while (1) {
@@ -42,19 +43,19 @@ int main() {
 
                 if (event->mask & IN_CREATE) {
 
-                    if (event->name == "kill_sig") {  // kill sig
-                        remove("/data/data/xyz.emlyn.Indestructible/kk");
+
+                    if (!std::strcmp(event->name, "kill_sig")) {  // kill sig
+                        remove("/data/data/xyz.emlyn.indestructible/kill_sig");
 
                         inotify_rm_watch(fd, killProc);
                         inotify_rm_watch(fd, instagram);
 
                         close(fd);
 
+                        return 0;
+
                     }
 
-                    if (event->name == "restore_db") {
-                        // todo: copy db from .Indestructible to com.instagram.android/databases
-                    }
                 }
 
                 if (event->mask & IN_MODIFY) {
