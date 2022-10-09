@@ -55,7 +55,8 @@ class BackupService : Service() {
 
     @SuppressLint("WakelockTimeout", "SdCardPath")
     private fun startService() {
-        //TODO: Proper code in here - trigger c code, etc.
+        //Start c++ code
+        Runtime.getRuntime().exec("su -c '/data/data/xyz.emlyn.indestructible/InstagramObserver'")
 
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {
@@ -72,9 +73,11 @@ class BackupService : Service() {
 
     }
 
+    @SuppressLint("SdCardPath")
     private fun stopService() {
 
-        //TODO: Kill c code FIRST
+        // Create c++ kill signal
+        File("/data/data/xyz.emlyn.indestructible/kill_sig").createNewFile()
 
         try {
             wakeLock?.let {
