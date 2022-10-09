@@ -10,6 +10,7 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.View
+import android.widget.ScrollView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
@@ -130,7 +131,11 @@ class MainActivity : AppCompatActivity() {
         }
 
         val logTV = findViewById<TextView>(R.id.loggingTV)
-        logTV.text = "$existingTextSB>\n"
+        logTV.text = "$existingTextSB>"
+
+        // auto-scroll to bottom on new log event
+        // postdelayed bc parent func (this) called in oncreate before layout finished
+        uiHandler.postDelayed({ findViewById<ScrollView>(R.id.logSV).fullScroll(View.FOCUS_DOWN) }, 100)
 
         Log.d("xyz.emlyn", "ltv")
 
