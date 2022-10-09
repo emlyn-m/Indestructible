@@ -11,6 +11,13 @@
 #define EVENT_SIZE  ( sizeof (struct inotify_event) )
 #define EVENT_BUF_LEN     ( 1024 * ( EVENT_SIZE + 16 ) )
 
+void log(char* msg) {
+    //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
+    //TODO: Include timestamp
+    FILE* lf = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
+    fwrite(msg, sizeof(char), strlen(msg), lf);
+    fclose(lf);
+}
 
 int main() {
 
@@ -31,9 +38,7 @@ int main() {
 
     //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
     //TODO: Include timestamp
-    FILE* logFile = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
-    fwrite("C++ Observer started\n", sizeof(char), strlen("C++ Observer started\n"), logFile);
-    fclose(logFile);
+    log("C++ Observer started\n");
 
     while (1) {
 
@@ -42,58 +47,62 @@ int main() {
         length = read(fd, buffer, EVENT_BUF_LEN); //blocking call
         if (length < 0) { perror("read"); }
 
-        while (i < length) {
+        try {
+            while (i < length) {
 
-            struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
-            if ( event->len ) {
+                struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
+                if ( event->len ) {
 
-                if (event->mask & IN_CREATE) {
+                    if (event->mask & IN_CREATE) {
 
 
-                    if (!std::strcmp(event->name, "kill_sig")) {  // kill sig
-                        remove("/data/data/xyz.emlyn.indestructible/kill_sig");
+                        if (!std::strcmp(event->name, "kill_sig")) {  // kill sig
+                            remove("/data/data/xyz.emlyn.indestructible/kill_sig");
 
-                        //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
-                        //TODO: Include timestamp
-                        FILE* logFile = fopen("/data/data/xyz.emlyn.indestructible/log", "a");
-                        fwrite("C++ Observer killed\n", sizeof(char), strlen("C++ Observer killed\n"), logFile);
-                        fclose(logFile);
+                            //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
+                            //TODO: Include timestamp
+                            log("C++ Observer killed\n");
 
-                        inotify_rm_watch(fd, killProc);
-                        inotify_rm_watch(fd, instagram);
 
-                        close(fd);
+                            inotify_rm_watch(fd, killProc);
+                            inotify_rm_watch(fd, instagram);
 
-                        return 0;
+                            close(fd);
 
+                            return 0;
+
+                        }
+
+                    }
+
+                    if (event->mask & IN_MODIFY) {
+                        // file modified
+                        // for now just create a file in .Indestructible/ for logging purposes
+                        // todo: probably copy instagram db to a file in .Indestructible/databases and handle it there?
+                        // then backup / restore, create warning
+
+                        // ooh maybe do some temporary copying to account for race conditions? like direct.bak.001.db, direct.bak.002.db, using largest number already exists in dir + 1
+
+                        log("IG DB Modified\n");
                     }
 
                 }
 
-                if (event->mask & IN_MODIFY) {
-                    // file modified
-                    // for now just create a file in .Indestructible/ for logging purposes
-                    // todo: probably copy instagram db to a file in .Indestructible/databases and handle it there?
-                    // then backup / restore, create warning
-
-                    // ooh maybe do some temporary copying to account for race conditions? like direct.bak.001.db, direct.bak.002.db, using largest number already exists in dir + 1
-
-                    FILE* pFile = fopen("/data/data/xyz.emlyn.Indestructible/instagram_modified", "w");
-                    fclose(pFile); // open/close to create file
-                }
+                i += EVENT_SIZE + event->len;
 
             }
 
-            i += EVENT_SIZE + event->len;
-
         }
-
-    }
+    } catch() {}  // if error, run standard cleanup routine
 
     inotify_rm_watch(fd, killProc);
     inotify_rm_watch(fd, instagram);
 
     close(fd);
+    //TODO: Potentially create some crash file
+    log("C++ Observer closed unexpectedly!");
+
+
 
     return 0;
 
