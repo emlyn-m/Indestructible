@@ -108,6 +108,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        setLogTV(logFile)
+    }
+
     @SuppressLint("SdCardPath", "SetTextI18n")
     fun setLogTV(lf : File) {
 
