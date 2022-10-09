@@ -71,11 +71,11 @@ class MainActivity : AppCompatActivity() {
         }
         logObserver.startWatching()
 
-        // Copy InstagramObserver from /res/raw to /data/data/xyz.emlyn.indestructible/
-        val igObserverExe = File("/data/data/xyz.emlyn.indestructible/InstagramObserver")
+        // Copy instagram_observer_executable from /res/raw to /data/data/xyz.emlyn.indestructible/
+        val igObserverExe = File("/data/data/xyz.emlyn.indestructible/instagram_observer_executable")
         if (!igObserverExe.exists()) {
-            val inStream: InputStream = resources.openRawResource(R.raw.InstagramObserver)
-            val out = FileOutputStream("/data/data/xyz.emlyn.indestructible/InstagramObserver")
+            val inStream: InputStream = resources.openRawResource(R.raw.instagram_observer_executable)
+            val out = FileOutputStream("/data/data/xyz.emlyn.indestructible/instagram_observer_executable")
             val buff = ByteArray(1024)
             var read = 0
 
