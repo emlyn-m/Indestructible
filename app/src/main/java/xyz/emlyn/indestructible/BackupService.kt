@@ -1,5 +1,6 @@
 package xyz.emlyn.indestructible
 
+import android.R.attr.process
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
@@ -11,6 +12,7 @@ import android.util.Log
 import java.io.File
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+
 
 class BackupService : Service() {
 
@@ -56,7 +58,7 @@ class BackupService : Service() {
     @SuppressLint("WakelockTimeout", "SdCardPath")
     private fun startService() {
         //Start c++ code
-        Runtime.getRuntime().exec("su -c '/data/data/xyz.emlyn.indestructible/InstagramObserver'")
+        Runtime.getRuntime().exec(arrayOf("su", "-M", "-c", "/data/data/xyz.emlyn.indestructible/InstagramObserver"))
 
         wakeLock =
             (getSystemService(Context.POWER_SERVICE) as PowerManager).run {

@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity() {
                 inStream.close()
                 out.close()
             }
-            Runtime.getRuntime().exec("chmod +x /data/data/xyz.emlyn.indestructible/InstagramObserver")
+            Runtime.getRuntime().exec("chmod 777 /data/data/xyz.emlyn.indestructible/InstagramObserver")
 
         }
 

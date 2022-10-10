@@ -2,6 +2,10 @@
 // Created by emlyn on 10/6/22.
 //
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wwritable-strings"
+
+
 #include <stdio.h>
 #include <sys/inotify.h>
 #include <cstdio>
@@ -40,42 +44,37 @@ int main() {
     //TODO: Include timestamp
     log("C++ Observer started\n");
 
-    while (1) {
+    try {
+        while (1) {
 
-        i = 0;
+            i = 0;
 
-        length = read(fd, buffer, EVENT_BUF_LEN); //blocking call
-        if (length < 0) { perror("read"); }
+            length = read(fd, buffer, EVENT_BUF_LEN); //blocking call
+            if (length < 0) { perror("read"); }
 
-        try {
             while (i < length) {
 
                 struct inotify_event *event = ( struct inotify_event * ) &buffer[ i ];
                 if ( event->len ) {
 
-                    if (event->mask & IN_CREATE) {
+                    if (event->mask & IN_CREATE && !std::strcmp(event->name, "kill_sig")) {
+
+                        // kill sig
+                        remove("/data/data/xyz.emlyn.indestructible/kill_sig");
+
+                        log("C++ Observer killed\n");
 
 
-                        if (!std::strcmp(event->name, "kill_sig")) {  // kill sig
-                            remove("/data/data/xyz.emlyn.indestructible/kill_sig");
+                        inotify_rm_watch(fd, killProc);
+                        inotify_rm_watch(fd, instagram);
 
-                            //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
-                            //TODO: Include timestamp
-                            log("C++ Observer killed\n");
+                        close(fd);
 
-
-                            inotify_rm_watch(fd, killProc);
-                            inotify_rm_watch(fd, instagram);
-
-                            close(fd);
-
-                            return 0;
-
-                        }
-
+                        return 0;
                     }
 
-                    if (event->mask & IN_MODIFY) {
+
+                    if (event->mask & IN_MODIFY && !std::strcmp(event->name, "direct.db")) {
                         // file modified
                         // for now just create a file in .Indestructible/ for logging purposes
                         // todo: probably copy instagram db to a file in .Indestructible/databases and handle it there?
@@ -91,9 +90,8 @@ int main() {
                 i += EVENT_SIZE + event->len;
 
             }
-
         }
-    } catch() {}  // if error, run standard cleanup routine
+    } catch(...) { log("An error occurred"); }
 
     inotify_rm_watch(fd, killProc);
     inotify_rm_watch(fd, instagram);
