@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/user_consent_cl"
+    android:background="@android:color/transparent">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="20dp"
+        android:background="?attr/colorPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintDimensionRatio="1.5">
+
+        <TextView
+            android:id="@+id/user_consent_tv"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="?attr/colorOnPrimary"
+            android:fontFamily="@font/modern_sans"
+            android:textSize="24dp"
+            android:layout_margin="10dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/user_consent"
+            tools:ignore="SpUsage" />
+
+        <ScrollView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/user_consent_tv"
+            app:layout_constraintStart_toStartOf="@+id/user_consent_tv"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/consent_accept">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnPrimary"
+                android:fontFamily="@font/modern_sans"
+                android:textSize="14sp"
+                android:layout_margin="10dp"
+                android:text="@string/user_consent_message" />
+
+        </ScrollView>
+
+
+        <TextView
+            android:id="@+id/consent_accept"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_margin="30dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textSize="20sp"
+            android:fontFamily="@font/modern_sans"
+            android:textColor="@color/tv_color_enable_disable"
+            android:text="@string/accept"
+            android:enabled="false" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

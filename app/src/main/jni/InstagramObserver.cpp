@@ -38,7 +38,7 @@ int main() {
     if (fd < 0) { perror("inotify_init"); }
 
     killProc = inotify_add_watch(fd, "/data/data/xyz.emlyn.indestructible/", IN_CREATE);
-    instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY);
+    instagram = inotify_add_watch(fd, "/data/data/com.instagram.android/databases/", IN_MODIFY | IN_CLOSE_WRITE);
 
     //TODO: Do this logfile in a way that it uses the strings.xml file (somehow)
     //TODO: Include timestamp
@@ -80,7 +80,8 @@ int main() {
                         // todo: probably copy instagram db to a file in .Indestructible/databases and handle it there?
                         // then backup / restore, create warning
 
-                        // ooh maybe do some temporary copying to account for race conditions? like direct.bak.001.db, direct.bak.002.db, using largest number already exists in dir + 1
+                        // todo: have some flag (dataSent) that is set high when data copied to xyz and set low when data received back
+                        // databases can only be copied when flag low
 
                         log("IG DB Modified\n");
                     }

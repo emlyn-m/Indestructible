@@ -15,6 +15,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.room.Ignore
 import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -41,6 +42,29 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(mToolbar)
 
         uiHandler = Handler(Looper.getMainLooper())
+
+        // setup user consent query
+        uiHandler.postDelayed({
+            findViewById<TextView>(R.id.consent_accept).isEnabled = true
+        }, 3000)
+
+        val sp = getSharedPreferences(getString(R.string.sharedprefs), MODE_PRIVATE)
+        if (sp.getBoolean(getString(R.string.needs_consent), true)) {
+
+
+            val inflater = this.layoutInflater
+            val consentView =
+                inflater.inflate(R.layout.consent_layout, findViewById(R.id.main_activity_cl))
+
+            consentView.findViewById<TextView>(R.id.consent_accept).setOnClickListener {
+                findViewById<ConstraintLayout>(R.id.main_activity_cl).removeView(findViewById(R.id.user_consent_cl))
+
+                val spedit = sp.edit()
+                spedit.putBoolean(getString(R.string.needs_consent), false)
+                spedit.apply()
+            }
+        }
+
 
         observeDirectory = File("/data/data/xyz.emlyn.indestructible")
         logFile = File("/data/data/xyz.emlyn.indestructible/log")
@@ -77,7 +101,7 @@ class MainActivity : AppCompatActivity() {
             val inStream: InputStream = resources.openRawResource(R.raw.instagram_observer_executable)
             val out = FileOutputStream("/data/data/xyz.emlyn.indestructible/InstagramObserver")
             val buff = ByteArray(1024)
-            var read = 0
+            var read : Int
 
             try {
                 while (inStream.read(buff).also { read = it } > 0) {
@@ -107,8 +131,9 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    @Suppress("unused_parameter")
     @SuppressLint("SdCardPath")
-    fun onClick(v : View) {
+    fun onClick(ignored : View) {
 
         val sttv = findViewById<TextView>(R.id.stateChangeTV)
 

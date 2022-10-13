@@ -5,6 +5,7 @@ import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase.OPEN_READWRITE
 import android.os.FileObserver
 import android.os.IBinder
 import android.os.PowerManager
@@ -46,6 +47,10 @@ class BackupService : Service() {
                 if (event == FileObserver.CREATE && path == "kill_service") {
                     File("/data/data/xyz.emlyn.indestructible/kill_service").delete()
                     stopService()
+                }
+
+                if (event == FileObserver.CREATE && path =="direct.db") {
+                    mergeDatabase()
                 }
             }
         }
@@ -132,6 +137,19 @@ class BackupService : Service() {
             .setContentText("Running in background")
             .setContentIntent(pendingIntent)
             .build()
+
+    }
+
+
+    private fun mergeDatabase() {
+        val dbBak = openOrCreateDatabase("/data/data/xyz.emlyn.indestructible/direct-bak.db", MODE_PRIVATE, null)
+        val dbNew = openOrCreateDatabase("/data/data/xyz.emlyn.indestructible/direct.db", MODE_PRIVATE, null)
+
+        //TODO: Some shit here
+
+        dbBak.close()
+        dbNew.close()
+
 
     }
 }

@@ -19,6 +19,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Indestructible"
         tools:targetApi="31">
+
         <service
             android:name=".BackupService"
             android:description="@string/bak_serv_desc"
