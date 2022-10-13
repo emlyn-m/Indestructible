@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.os.FileObserver
 import android.os.Handler
 import android.os.Looper
+import android.text.method.LinkMovementMethod
 import android.util.Log
 import android.view.View
 import android.widget.ScrollView
@@ -43,29 +44,6 @@ class MainActivity : AppCompatActivity() {
 
         uiHandler = Handler(Looper.getMainLooper())
 
-        // setup user consent query
-        uiHandler.postDelayed({
-            findViewById<TextView>(R.id.consent_accept).isEnabled = true
-        }, 3000)
-
-        val sp = getSharedPreferences(getString(R.string.sharedprefs), MODE_PRIVATE)
-        if (sp.getBoolean(getString(R.string.needs_consent), true)) {
-
-
-            val inflater = this.layoutInflater
-            val consentView =
-                inflater.inflate(R.layout.consent_layout, findViewById(R.id.main_activity_cl))
-
-            consentView.findViewById<TextView>(R.id.consent_accept).setOnClickListener {
-                findViewById<ConstraintLayout>(R.id.main_activity_cl).removeView(findViewById(R.id.user_consent_cl))
-
-                val spedit = sp.edit()
-                spedit.putBoolean(getString(R.string.needs_consent), false)
-                spedit.apply()
-            }
-        }
-
-
         observeDirectory = File("/data/data/xyz.emlyn.indestructible")
         logFile = File("/data/data/xyz.emlyn.indestructible/log")
 
@@ -94,6 +72,35 @@ class MainActivity : AppCompatActivity() {
             }
         }
         logObserver.startWatching()
+
+
+        // setup user consent query
+        uiHandler.postDelayed({
+            findViewById<TextView>(R.id.consent_accept).isEnabled = true
+        }, 3000)
+
+        val sp = getSharedPreferences(getString(R.string.sharedprefs), MODE_PRIVATE)
+        if (sp.getBoolean(getString(R.string.needs_consent), true)) {
+
+
+            val inflater = this.layoutInflater
+            val consentView =
+                inflater.inflate(R.layout.consent_layout, findViewById(R.id.main_activity_cl))
+
+            consentView.findViewById<TextView>(R.id.user_consent_desc).movementMethod = LinkMovementMethod.getInstance()
+            consentView.findViewById<TextView>(R.id.consent_accept).setOnClickListener {
+                findViewById<ConstraintLayout>(R.id.main_activity_cl).removeView(findViewById(R.id.user_consent_cl))
+
+                val spedit = sp.edit()
+                spedit.putBoolean(getString(R.string.needs_consent), false)
+                spedit.apply()
+
+                File("/data/data/xyz.emlyn.indestructible/log")
+                    .appendText(String.format(getString(R.string.user_consent_accept), LocalDateTime.now().format(
+                        DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss.SSS"))))
+            }
+        }
+
 
         // Copy instagram_observer_executable from /res/raw to /data/data/xyz.emlyn.indestructible/
         val igObserverExe = File("/data/data/xyz.emlyn.indestructible/InstagramObserver")

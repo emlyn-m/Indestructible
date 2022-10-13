@@ -13,9 +13,10 @@
     <string name="user_consent_message">
         This application, by its very nature, requires root access in order to access the Instagram message database. It also temporarily creates a local copy of the database in this applications
         data directory. Please note that no data is ever transferred from the device by this app.\n
-        The source code for this application is available on GitHub at https://github.com/emlynmatheson/Indestructible.
+        The source code for this application is available on <a href="https://github.com/emlynmatheson/Indestructible">GitHub</a>.
     </string>
     <string name="accept">ACCEPT</string>
+    <string name="user_consent_accept">User privacy policy accepted at %1$s\n</string>
 
 
     <string name="sharedprefs" translatable="false">xyz.emlyn.indestructible.sharedprefs</string>
