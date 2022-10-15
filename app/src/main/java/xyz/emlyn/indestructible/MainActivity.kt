@@ -86,7 +86,6 @@ class MainActivity : AppCompatActivity() {
 
         logObserver = object:FixedFileObserver(observeDirectory) {
             override fun onEvent(event : Int, path : String?) {
-                Log.d("xyz.emlyn", "MAFO+P="+path)
                 if (event == FileObserver.MODIFY && path == "log") { runOnUiThread { setLogTV(logFile) } }
 
                 if (event == FileObserver.CREATE && path == "service_created") {
@@ -190,8 +189,6 @@ class MainActivity : AppCompatActivity() {
         // auto-scroll to bottom on new log event
         // postdelayed bc parent func (this) called in oncreate before layout finished
         uiHandler.postDelayed({ findViewById<ScrollView>(R.id.logSV).fullScroll(View.FOCUS_DOWN) }, 100)
-
-        Log.d("xyz.emlyn", "ltv")
 
     }
 

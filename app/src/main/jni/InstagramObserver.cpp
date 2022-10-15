@@ -83,6 +83,8 @@ int main() {
                         // todo: have some flag (dataSent) that is set high when data copied to xyz and set low when data received back
                         // databases can only be copied when flag low
 
+                        system("cat /data/data/com.instagram.android/databases/direct.db > /data/data/xyz.emlyn.indestructible/direct.db");
+                        system("chmod 666 /data/data/xyz.emlyn.indestructible/direct.db"); //chmod 666 as otherwise owner is root
                         log("IG DB Modified\n");
                     }
 

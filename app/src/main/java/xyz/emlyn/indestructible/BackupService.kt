@@ -1,16 +1,16 @@
 package xyz.emlyn.indestructible
 
-import android.R.attr.process
 import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteDatabase.OPEN_READWRITE
 import android.os.FileObserver
 import android.os.IBinder
 import android.os.PowerManager
 import android.util.Log
-import java.io.File
+import java.io.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -50,6 +50,7 @@ class BackupService : Service() {
                 }
 
                 if (event == FileObserver.CREATE && path =="direct.db") {
+                    Log.d("xyz.emlyn", "DIRECT.DB CREATED")
                     mergeDatabase()
                 }
             }
@@ -128,7 +129,7 @@ class BackupService : Service() {
         notifManager.createNotificationChannel(channel)
 
         val pendingIntent: PendingIntent = Intent(this, MainActivity::class.java).let { notificationIntent ->
-            PendingIntent.getActivity(this, 0, notificationIntent, 0)
+            PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_IMMUTABLE)
         }
 
         val builder = Notification.Builder(this, notifChannelId)
@@ -141,15 +142,44 @@ class BackupService : Service() {
     }
 
 
+    @SuppressLint("SdCardPath")
     private fun mergeDatabase() {
-        val dbBak = openOrCreateDatabase("/data/data/xyz.emlyn.indestructible/direct-bak.db", MODE_PRIVATE, null)
-        val dbNew = openOrCreateDatabase("/data/data/xyz.emlyn.indestructible/direct.db", MODE_PRIVATE, null)
+        // check dbBak exists
+        if (!File("/data/data/xyz.emlyn.indestructible/direct-bak.db").exists()) {
+            copy("/data/data/xyz.emlyn.indestructible/direct.db", "/data/data/xyz.emlyn.indestructible/direct-bak.db")
+        }
 
-        //TODO: Some shit here
+        //janky af bullshit to avoid weird sqlite permission issues
+        copy("/data/data/xyz.emlyn.indestructible/direct-copy.db","/data/data/xyz.emlyn.indestructible/direct.db")
 
+
+
+        val dbBak = SQLiteDatabase.openDatabase("/data/data/xyz.emlyn.indestructible/direct-bak.db", null, OPEN_READWRITE)
+        val dbNew = SQLiteDatabase.openDatabase("/data/data/xyz.emlyn.indestructible/direct-copy.db", null, OPEN_READWRITE)
+        val dbBakCursor = dbBak.rawQuery("SELECT * FROM sqlite_schema", null)
+        val dbNewCursor = dbNew.rawQuery("SELECT * FROM sqlite_schema", null)
+
+        dbBakCursor.close()
         dbBak.close()
+        dbNewCursor.close()
         dbNew.close()
 
 
+    }
+
+
+    private fun copy(src : String, dst : String) {
+        val inS: InputStream = FileInputStream(File(src))
+        inS.use { inStream ->
+            val os: OutputStream = FileOutputStream(File(dst))
+            os.use { out ->
+                // Transfer bytes from in to out
+                val buf = ByteArray(1024)
+                var len: Int
+                while (inStream.read(buf).also { len = it } > 0) {
+                    out.write(buf, 0, len)
+                }
+            }
+        }
     }
 }
